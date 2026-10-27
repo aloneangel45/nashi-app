@@ -34,9 +34,9 @@ internal static class EditorReliabilityChecks
             check(editor.Playing,"Valid range playback did not start after correcting invalid input");
             editor.FieldForTest("End").Text="editing";DesktopInput.Pump(250);
             check(editor.IsVisible,"Editing the range during playback closed the editor");
-            editor.Timeline.Focus();DesktopInput.Key(editor,Key.Space);
+            DesktopInput.Click(editor.Timeline);DesktopInput.Key(editor,Key.Space);
             check(!editor.Playing,"Space did not pause after editing a playing range; active="+editor.IsActive+"; focus="+Keyboard.FocusedElement?.GetType().Name+"; timelineFocused="+editor.Timeline.IsKeyboardFocusWithin);
-            editor.FieldForTest("Start").Text="invalid";editor.Timeline.Focus();DesktopInput.Key(editor,Key.O);
+            editor.FieldForTest("Start").Text="invalid";DesktopInput.Click(editor.Timeline);DesktopInput.Key(editor,Key.O);
             check(editor.IsVisible&&!editor.Playing,"Mark Out crashed on an invalid Start field");
             editor.FieldForTest("Start").Text="0";editor.FieldForTest("End").Text="5";
             var scrub=Children(editor).OfType<Slider>().Single(s=>s.ToolTip as string=="Preview position");scrub.Focus();var value=scrub.Value;

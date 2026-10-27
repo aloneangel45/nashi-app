@@ -27,6 +27,7 @@ internal static class SmokeTests
         void Check(bool value,string reason){if(!value)throw new Exception(reason);checks++;}
         TrayIconRecoveryChecks.Run(Check);
         EditorReliabilityChecks.Run(root,Check);
+        InteractionChecks.Run(root,Check);
         var visual=new DrawingVisual();using(var dc=visual.RenderOpen()){dc.DrawRectangle(Brushes.DarkOliveGreen,null,new Rect(0,0,320,180));dc.DrawRectangle(Brushes.Gold,null,new Rect(20,20,120,80));}
         var bitmap=new RenderTargetBitmap(320,180,96,96,PixelFormats.Pbgra32);bitmap.Render(visual);var source=Path.Combine(root,"Source.png");ImageEngine.Save(bitmap,source,"png");
         const string query="/tEXt/{str=Comment}";
@@ -55,7 +56,7 @@ internal static class SmokeTests
         foreach(var ext in ImageEngine.Formats){var converted=ImageEngine.Apply("convert",[source],root,new(){EncoderPath=testTools.Ready?testTools.Executable("ffmpeg"):null},ext);Check(new FileInfo(converted[0]).Length>0,"Empty "+ext);}
         var pdfs=Directory.GetFiles(root,"*.pdf");var merged=DocumentEngine.Pdf("mergePDFs",[pdfs[0],pdfs[0]],root);var parts=DocumentEngine.Pdf("splitPDF",merged,root);Check(parts.Count==2,"PDF page count mismatch");
         var zip=DocumentEngine.Zip([source],root);var extracted=DocumentEngine.Unzip(zip,root);Check(File.Exists(Path.Combine(extracted[0],"Source.png")),"ZIP output missing");
-        var library=new LibraryStore(Path.Combine(root,"UserData"));library.SetAppearance("dark");
+        var library=new LibraryStore(Path.Combine(root,"UserData"));library.SetAppearance("dark");var smokePreferences=new PreferencesStore(library.DirectoryPath);smokePreferences.Save(smokePreferences.Value with{Language="en"});
         var window=new MainWindow([source],library,checkForUpdates:false);window.Show();window.UpdateLayout();DesktopInput.Pump();
         LocalizationChecks.Run(root,window,source,Check);
         ToolSetupChecks.Run(root,window,Check);
@@ -79,7 +80,7 @@ internal static class SmokeTests
         Check(imagePixel[2]>200&&imagePixel[1]>150&&imagePixel[0]<50,"Clipboard image pixels changed");
         var drops=new System.Collections.Specialized.StringCollection{source,tagged};Clipboard.SetFileDropList(drops);FindButton("Home").Focus();DesktopInput.Key(window,Key.V,control:true);
         Check(window.SelectedFiles.Count==2&&window.SelectedFiles.Contains(source),"File-list paste failed");
-        Clipboard.SetText("https://www.youtube.com/watch?v=fixture");FindButton("Home").Focus();DesktopInput.Key(window,Key.D,control:true,shift:true);
+        Clipboard.SetText("https://www.youtube.com/watch?v=fixture");DesktopInput.Click(FindButton("Home"));DesktopInput.Key(window,Key.D,control:true,alt:true);
         Check(window.LinkField.Text.Contains("watch?v=fixture")&&window.LinkField.IsKeyboardFocused,"Copied-link shortcut failed");Capture(window.DownloadWindow,"windows-download.png");
         Clipboard.SetText("ordinary field paste");DesktopInput.Key(window.DownloadWindow,Key.V,control:true);
         Check(window.LinkField.Text.Contains("ordinary field paste")&&library.Entries.Count==3,"Link field paste was intercepted");window.DownloadWindow.Close();

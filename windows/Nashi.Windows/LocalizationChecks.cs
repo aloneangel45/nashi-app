@@ -15,6 +15,8 @@ internal static class LocalizationChecks
     internal static void Run(string directory,MainWindow owner,string image,Action<bool,string> check)
     {
         var before=L10n.Language;var prefs=new PreferencesStore(Path.Combine(directory,"Language profile"));
+        // Keep this interaction test deterministic when it runs under a Turkish Windows UI culture.
+        prefs.Save(prefs.Value with{Language="en"});
         var settings=new SettingsWindow(owner,prefs,()=>L10n.Language=prefs.Value.Language,()=>Task.CompletedTask);
         var editor=new ToolEditor(owner,"crop","Crop Image",image,preview:ImageEngine.Load(image));
         try

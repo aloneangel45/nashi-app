@@ -30,7 +30,7 @@ Both implementations use the same 45 input-format / 27-tool catalog. `scripts/ch
 | Paste content | Command+V | Ctrl+V |
 | Open selected-file tools | Return / Command+Return | Enter / Ctrl+Enter; Ctrl+Space remains supported |
 | Library result | Up/Down, Space preview, Return reuse | Up/Down, Space preview, Enter reuse |
-| Download copied link | Control+Shift+D | Ctrl+Shift+D |
+| Download copied link | Control+Shift+D | Ctrl+Alt+D |
 | Drag: convert / tools / actions | Shift / Command / Control | Shift / Ctrl / Alt |
 | Arrange a dragged window | Shift or Command | Shift or Alt |
 | Preview batch / media | Arrows navigate files; for media arrows seek, Option+arrows change files | Arrows navigate files; for media arrows seek, Alt+arrows change files |
