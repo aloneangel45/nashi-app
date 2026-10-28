@@ -19,7 +19,20 @@ public sealed class ToastWindow:Window
         Loaded+=(_,_)=>{Left=Math.Max(8,owner.Left+(owner.ActualWidth-Width)/2);Top=Math.Max(8,owner.Top+owner.ActualHeight-ActualHeight-30);};
         action.Click+=(_,_)=>{if(!complete){this.cancel?.Invoke();action.IsEnabled=false;}};Update(new(null,"A fresh file is on its way…"));
     }
-    public void Update(Nashi.Core.OperationProgress progress){L10n.SetProgressText(label,progress.Label);bar.IsIndeterminate=progress.Fraction is null;if(progress.Fraction is {} fraction)bar.Value=Math.Clamp(fraction,0,1);L10n.SetText(detail,progress.Fraction is {} value?$"{value:P0}":"Working…");}
+    internal static double? VisibleProgress(double? fraction)
+    {
+        if(fraction is not {} value||!double.IsFinite(value)||value<=0)return null;
+        return Math.Clamp(Math.Max(value,.005),0,1);
+    }
+    internal static string ProgressDetail(double? fraction)
+    {
+        if(fraction is not {} value||!double.IsFinite(value)||value<=0)return "Working…";
+        return value<.005?"Less than 1%":$"{Math.Clamp(value,0,1):P0}";
+    }
+    public void Update(Nashi.Core.OperationProgress progress)
+    {
+        L10n.SetProgressText(label,progress.Label);var visible=VisibleProgress(progress.Fraction);bar.IsIndeterminate=visible is null;if(visible is {} fraction)bar.Value=fraction;L10n.SetText(detail,ProgressDetail(progress.Fraction));
+    }
     public void Complete(IReadOnlyList<string> outputs)
     {
         complete=true;L10n.SetText(label,outputs.Count==0?"All set. You’re ready to go.":$"Nicely done. {outputs.Count} {(outputs.Count==1?"file is":"files are")} ready.");if(outputs.Count>0)L10n.SetUserText(detail,Path.GetFileName(outputs[0]));else L10n.SetText(detail,"Ready.");bar.Visibility=Visibility.Collapsed;L10n.Bind(action,ContentControl.ContentProperty,"Show in Explorer");action.IsEnabled=true;
