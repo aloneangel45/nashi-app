@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using Nashi.Core;
@@ -48,6 +49,11 @@ internal static class LocalizationChecks
             var formatted=new TextBlock();L10n.BindFormat(formatted,TextBlock.TextProperty,"{0} selected",3);
             check(formatted.Text=="3 seçili","Live formatted localization did not apply Turkish count copy");L10n.Language="en";
             check(formatted.Text=="3 selected","Formatted localization did not update when language changed");L10n.Language="tr";
+            var title=new TextBlock();L10n.BindLocalizedFormat(title,TextBlock.TextProperty,"{0} · Nashi","Crop Image");
+            check(title.Text=="Görseli Kırp · Nashi","Localized dynamic tool title did not translate its tool name");L10n.Language="en";
+            check(title.Text=="Crop Image · Nashi","Localized dynamic tool title did not update to English");L10n.Language="tr";
+            var mixed=new System.Windows.Documents.Run("Original stays safe");L10n.Bind(mixed,System.Windows.Documents.Run.TextProperty,"Original stays safe");
+            check(mixed.Text=="Orijinal dosyan güvende","Inline localized text did not bind live");
             var raw=new TextBox{Text="Home\r\nLibrary · Türkçe ıİşğü 🍐"};L10n.Attach(raw);
             check(raw.Text=="Home\r\nLibrary · Türkçe ıİşğü 🍐","Localization modified user text");
             Capture(settings,Path.Combine(directory,"windows-settings-turkish.png"));

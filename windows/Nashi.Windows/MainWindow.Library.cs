@@ -54,7 +54,7 @@ public sealed partial class MainWindow
     private void BuildSelectionActions()
     {
         L10n.Bind(homeTitle,TextBlock.TextProperty,files.Count==0?"Your files. Their next form.":"Let’s make something of it.");
-        shortcutHints.Children.Clear();foreach(var hint in new[]{preferences.Value.ConvertModifier+"  "+L10n.Text("Convert"),preferences.Value.ToolsModifier+"  "+L10n.Text("Tools"),preferences.Value.ActionsModifier+"  "+L10n.Text("File actions")}){var pill=Card(Text(hint,11,"Muted",localize:false));pill.Padding=new(9,5,9,5);pill.Margin=new(0,0,7,0);pill.CornerRadius=new(9);shortcutHints.Children.Add(pill);}
+        shortcutHints.Children.Clear();foreach(var (modifier,label) in new[]{(preferences.Value.ConvertModifier,"{0}  Convert"),(preferences.Value.ToolsModifier,"{0}  Tools"),(preferences.Value.ActionsModifier,"{0}  File actions")}){var text=TextBlockForShortcut();L10n.BindFormat(text,TextBlock.TextProperty,label,modifier);var pill=Card(text);pill.Padding=new(9,5,9,5);pill.Margin=new(0,0,7,0);pill.CornerRadius=new(9);shortcutHints.Children.Add(pill);}
         if(files.Count==0)return;
         var stack=new StackPanel();actions.Children.Add(stack);var tiles=new Grid();for(var n=0;n<3;n++)tiles.ColumnDefinitions.Add(new());stack.Children.Add(tiles);
         var formats=FeatureCatalog.Formats(files);var tools=Choices();
@@ -68,4 +68,5 @@ public sealed partial class MainWindow
         Tile(2,"Move & share","Send it on its way","↗",new[]{("Share","share"),("Float","float"),("Copy","copy"),("Move","move"),("Copy Path","copyPath"),("Terminal","terminal")}.Select(t=>(t.Item1,(Action)(async()=>await PerformFileAction(t.Item2,files.ToArray())))));
         var quick=new WrapPanel{Margin=new(0,8,0,0)};quick.Children.Add(Text("QUICK PICKS",10,"Muted"));foreach(var format in formats.Take(4))quick.Children.Add(Button(format.ToUpperInvariant()+" ↗",async()=>await EditAsync(new("convert:"+format,"Convert","↗"))));stack.Children.Add(quick);
     }
+    private static TextBlock TextBlockForShortcut()=>new(){FontSize=11,TextWrapping=TextWrapping.Wrap,VerticalAlignment=VerticalAlignment.Center,Foreground=Theme.Brush("Muted")};
 }

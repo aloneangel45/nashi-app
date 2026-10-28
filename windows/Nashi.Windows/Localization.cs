@@ -22,6 +22,7 @@ internal static class L10n
     internal static string Uppercase(string source)=>AppLocalization.Uppercase(Text(source),Language);
     internal static void Bind(DependencyObject target,DependencyProperty property,string source)=>BindingOperations.SetBinding(target,property,new Binding(nameof(LanguageState.Language)){Source=LanguageState.Shared,Converter=TextConverter.Shared,ConverterParameter=source,Mode=BindingMode.OneWay});
     internal static void BindFormat(DependencyObject target,DependencyProperty property,string source,params object[] arguments)=>BindingOperations.SetBinding(target,property,new Binding(nameof(LanguageState.Language)){Source=LanguageState.Shared,Converter=TextConverter.Shared,ConverterParameter=new object[]{source,arguments},Mode=BindingMode.OneWay});
+    internal static void BindLocalizedFormat(DependencyObject target,DependencyProperty property,string source,params string[] localizedArguments)=>BindFormat(target,property,source,localizedArguments.Select(value=>(object)new LocalizedArgument(value)).ToArray());
     internal static TextBlock Label(TextBlock text){Bind(text,TextBlock.TextProperty,text.Text);return text;}
     internal static T Content<T>(T control)where T:ContentControl{if(control.Content is string source)Bind(control,ContentControl.ContentProperty,source);return control;}
     internal static void SetText(TextBlock text,string source)=>Bind(text,TextBlock.TextProperty,source);
@@ -45,11 +46,12 @@ internal static class L10n
         internal static readonly TextConverter Shared=new();
         public object Convert(object value,Type type,object parameter,CultureInfo culture)
         {
-            if(parameter is object[] {Length:2} format&&format[0] is string source&&format[1] is object[] args)return string.Format(CultureInfo.CurrentCulture,AppLocalization.Text(source,(string)value),args);
+            if(parameter is object[] {Length:2} format&&format[0] is string source&&format[1] is object[] args)return string.Format(CultureInfo.CurrentCulture,AppLocalization.Text(source,(string)value),args.Select(argument=>argument is LocalizedArgument localized?AppLocalization.Text(localized.Source,(string)value):argument).ToArray());
             return AppLocalization.Text((string)parameter,(string)value);
         }
         public object ConvertBack(object value,Type type,object parameter,CultureInfo culture)=>throw new NotSupportedException();
     }
+    private sealed record LocalizedArgument(string Source);
     private sealed class ChoiceConverter:IMultiValueConverter
     {
         internal static readonly ChoiceConverter Shared=new();

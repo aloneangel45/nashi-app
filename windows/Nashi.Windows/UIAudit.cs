@@ -290,6 +290,10 @@ internal static class UIAudit
 
     private static void AssertActualScene(Window subject, MainWindow owner, Fixtures fixtures, Capture capture)
     {
+        var languageBefore=L10n.Language;var liveTitle=new TextBlock();L10n.BindLocalizedFormat(liveTitle,TextBlock.TextProperty,"{0} · Nashi","Crop Image");var liveInline=new System.Windows.Documents.Run("Original stays safe");L10n.Bind(liveInline,System.Windows.Documents.Run.TextProperty,"Original stays safe");
+        L10n.Language="tr";var turkishBindings=liveTitle.Text=="Görseli Kırp · Nashi"&&liveInline.Text=="Orijinal dosyan güvende";
+        L10n.Language="en";var englishBindings=liveTitle.Text=="Crop Image · Nashi"&&liveInline.Text=="Original stays safe";L10n.Language=languageBefore;
+        capture.Checks["liveLocalizedBindings"]=turkishBindings&&englishBindings;if(!capture.Checks["liveLocalizedBindings"])capture.Issues.Add("Localized title or inline copy did not update when the language changed.");
         capture.Checks["actualScene"] = capture.Scene switch
         {
             "home.empty" => subject == owner && !owner.LibraryVisible && owner.SelectedFiles.Count == 0,

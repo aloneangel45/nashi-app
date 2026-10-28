@@ -13,7 +13,7 @@ internal static class DesktopParityChecks
     internal static void Run(string root,MainWindow owner,string image,string text,string pastedImage,Toolchain tools,Action<bool,string> check)
     {
         check(DesktopGeometry.FitsWorkArea(owner),"Home window extends beyond the display work area");
-        var isolated=new LibraryStore(Path.Combine(root,"Desktop parity library"));isolated.SetAppearance(Theme.Dark?"dark":"light");var folder=Directory.CreateDirectory(Path.Combine(root,"Folder clipboard fixture")).FullName;
+        var isolated=new LibraryStore(Path.Combine(root,"Desktop parity library"));isolated.SetAppearance(Theme.Dark?"dark":"light");var isolatedPreferences=new PreferencesStore(isolated.DirectoryPath);isolatedPreferences.Save(isolatedPreferences.Value with{Language="en"});var folder=Directory.CreateDirectory(Path.Combine(root,"Folder clipboard fixture")).FullName;
         var result=ClipboardImport.Read(new DataObject(DataFormats.FileDrop,new[]{folder,image,folder}),isolated);check(result.Paths.Length==2&&result.Paths.Contains(folder),"Folder paste rejected a directory or duplicated it");
         var window=new MainWindow(library:isolated,checkForUpdates:false);window.Show();DesktopInput.Pump();
         // Actual OS clipboard import, routed through native Ctrl+V, into the separate fixture Library.

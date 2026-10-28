@@ -20,6 +20,21 @@ internal static class LocalizationChecks
         check(AppLocalization.Text("Update to 1.2.3","tr")=="1.2.3 sürümüne güncelle"&&AppLocalization.Text("photo.png · Preview · Nashi","tr")=="photo.png · Önizleme · Nashi","Dynamic update or filename preview title did not localize");
         check(AppLocalization.Text("Add or change files","tr")=="Dosya ekle veya değiştir"&&AppLocalization.Text("✦  READY WHEN YOU ARE","tr")=="✦  HAZIRSAN BAŞLAYALIM","Selected-file home copy remained English");
         check(AppLocalization.Text("3 photos · full-frame images · saved in post order","tr")=="3 fotoğraf · tam kare görseller · gönderi sırasıyla kaydedilir","Web photo inspection summary was not localized");
+        foreach(var (source,target) in new[]{
+            ("Choose files for Nashi","Nashi için dosya seç"),("Save downloaded media to…","İndirilen medyanın kaydedileceği yer…"),("Save new files to…","Yeni dosyaların kaydedileceği yer…"),
+            ("Save new copies here","Yeni kopyaları buraya kaydet"),("Save downloaded media here","İndirilen medyayı buraya kaydet"),("Keep them together, or give each one a fresh start.","Dosyaları birlikte tut veya her birine yeni bir başlangıç ver."),
+            ("Processed preview unavailable for this Windows codec.","Bu Windows codec'i için işlenmiş önizleme kullanılamıyor."),("Preview unavailable. codec error","Önizleme kullanılamıyor. codec error"),
+            ("Pasted text. Choose a tool or create a ZIP.","Yapıştırılan metin. Bir araç seç veya ZIP oluştur."),("Pasted image. Choose a tool or create a ZIP.","Yapıştırılan görsel. Bir araç seç veya ZIP oluştur."),
+            ("Pasted files. Choose a tool or create a ZIP.","Yapıştırılan dosyalar. Bir araç seç veya ZIP oluştur."),("Shift  Convert","Shift  Dönüştür"),("Ctrl  Tools","Ctrl  Araçlar"),("Alt  File actions","Alt  Dosya işlemleri")})
+            check(AppLocalization.Text(source,"tr")==target,"Windows UI copy is untranslated or changed unexpectedly: "+source);
+        check(AppLocalization.Text("Preview position","tr")=="Önizleme konumu"&&AppLocalization.Text("Space: preview · Enter: use in Nashi","tr")=="Boşluk: önizle · Enter: Nashi'de kullan","Preview tooltip or Library card hint stayed in English");
+        foreach(var (source,target) in new[]{
+            ("Download from the web · Nashi","Web'den indir · Nashi"),("Read QR Codes · Nashi","QR Kodlarını Oku · Nashi"),("Metadata · Nashi","Meta Veriler · Nashi"),("Make it yours · Nashi","Sana göre · Nashi"),("Organize PDF · Nashi","PDF'yi düzenle · Nashi"),("Preview · Nashi","Önizleme · Nashi"),
+            ("Float · Nashi","Yüzen Pencere · Nashi"),("No QR codes found. Try a larger or sharper image.","QR kodu bulunamadı. Daha büyük veya daha net bir görsel dene."),
+            ("1 QR code found.","1 QR kodu bulundu."),("2 QR codes found.","2 QR kodu bulundu."),
+            ("Original image · ready to download","Orijinal görsel · indirilmeye hazır"),("YouTube thumbnail · best available full-size image","YouTube küçük resmi · mevcut en yüksek çözünürlük"),
+            ("Balanced","Dengeli"),("Strong","Güçlü"),("Original dimensions","Orijinal boyutlar"),("Custom dimensions","Özel boyutlar"),("2560 px longest edge","Uzun kenar 2560 px"),("1920 px longest edge","Uzun kenar 1920 px"),("1280 px longest edge","Uzun kenar 1280 px"),("Best available","Mevcut en iyi kalite"),("Up to 1080p","En fazla 1080p"),("Up to 720p","En fazla 720p")})
+            check(AppLocalization.Text(source,"tr")==target,"Windows title or dropdown value stayed untranslated: "+source);
         foreach(var value in new[]{"Home.png","MP4","Ctrl+Shift","⌘S","00:01.250"})check(AppLocalization.Text(value,"tr")==value,"Translation changed a format, path or shortcut");
         foreach(var (source,target) in AppLocalization.Turkish)check(Regex.Matches(source,@"\{[0-9]\}").Select(m=>m.Value).Order().SequenceEqual(Regex.Matches(target,@"\{[0-9]\}").Select(m=>m.Value).Order()),"Translation placeholders differ: "+source);
         var originalCulture=System.Globalization.CultureInfo.CurrentUICulture;

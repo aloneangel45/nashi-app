@@ -17,7 +17,7 @@ public static class FileActions
         internal readonly DataTransferManager Manager=manager;internal string[] Paths=[];
         internal async void Requested(DataTransferManager sender,DataRequestedEventArgs args)
         {
-            var paths=Paths.ToArray();var deferral=args.Request.GetDeferral();try{var items=new List<IStorageItem>();foreach(var path in paths)items.Add(Directory.Exists(path)?await StorageFolder.GetFolderFromPathAsync(path):await StorageFile.GetFileFromPathAsync(path));args.Request.Data.Properties.Title=paths.Length==1?Path.GetFileName(paths[0]):$"{paths.Length} files from Nashi";args.Request.Data.SetStorageItems(items);}catch(Exception error){args.Request.FailWithDisplayText(error.Message);}finally{deferral.Complete();}
+            var paths=Paths.ToArray();var deferral=args.Request.GetDeferral();try{var items=new List<IStorageItem>();foreach(var path in paths)items.Add(Directory.Exists(path)?await StorageFolder.GetFolderFromPathAsync(path):await StorageFile.GetFileFromPathAsync(path));args.Request.Data.Properties.Title=paths.Length==1?Path.GetFileName(paths[0]):L10n.Text($"{paths.Length} files from Nashi");args.Request.Data.SetStorageItems(items);}catch(Exception error){args.Request.FailWithDisplayText(L10n.Text(error.Message));}finally{deferral.Complete();}
         }
     }
     public static void Copy(IReadOnlyList<string> paths){var values=new StringCollection();values.AddRange(paths.ToArray());Clipboard.SetFileDropList(values);}
