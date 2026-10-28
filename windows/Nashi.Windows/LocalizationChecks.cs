@@ -52,9 +52,18 @@ internal static class LocalizationChecks
             var progressLabel=new TextBlock();L10n.SetProgressText(progressLabel,"File 1 of 2 · Downloading media…");
             check(progressLabel.Text=="Dosya 1/2 · Medya indiriliyor…","Nested file progress label did not localize");L10n.Language="en";
             check(progressLabel.Text=="File 1 of 2 · Downloading media…","Nested file progress label did not update to English");L10n.Language="tr";
+            var accessible=new Button();L10n.BindFormat(accessible,System.Windows.Automation.AutomationProperties.NameProperty,"Show {0} in Explorer","notes.png");
+            check(System.Windows.Automation.AutomationProperties.GetName(accessible)=="notes.png öğesini Dosya Gezgini'nde göster","Accessible file action name did not localize while preserving the file name");L10n.Language="en";
+            check(System.Windows.Automation.AutomationProperties.GetName(accessible)=="Show notes.png in Explorer","Accessible file action name did not return to English");L10n.Language="tr";
+            var photoChoice=new CheckBox();L10n.BindFormat(photoChoice,ContentControl.ContentProperty,"Photo {0} · {1} × {2}",42,1920,1080);
+            check(photoChoice.Content as string=="Fotoğraf 42 · 1920 × 1080","Dynamic web photo choice did not localize");L10n.Language="en";
+            check(photoChoice.Content as string=="Photo 42 · 1920 × 1080","Dynamic web photo choice did not return to English");L10n.Language="tr";
             var title=new TextBlock();L10n.BindLocalizedFormat(title,TextBlock.TextProperty,"{0} · Nashi","Crop Image");
             check(title.Text=="Görseli Kırp · Nashi","Localized dynamic tool title did not translate its tool name");L10n.Language="en";
             check(title.Text=="Crop Image · Nashi","Localized dynamic tool title did not update to English");L10n.Language="tr";
+            var wheelTitle=new TextBlock();L10n.BindLocalizedFormat(wheelTitle,TextBlock.TextProperty,"Nashi · {0}","File actions");
+            check(wheelTitle.Text=="Nashi · Dosya işlemleri","Global drag wheel title did not localize its mode");L10n.Language="en";
+            check(wheelTitle.Text=="Nashi · File actions","Global drag wheel title did not update to English");L10n.Language="tr";
             var mixed=new System.Windows.Documents.Run("Original stays safe");L10n.Bind(mixed,System.Windows.Documents.Run.TextProperty,"Original stays safe");
             check(mixed.Text=="Orijinal dosyan güvende","Inline localized text did not bind live");
             var raw=new TextBox{Text="Home\r\nLibrary · Türkçe ıİşğü 🍐"};L10n.Attach(raw);

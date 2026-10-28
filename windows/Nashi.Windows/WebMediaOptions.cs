@@ -27,7 +27,7 @@ public sealed partial class MainWindow
             {
                 if(!tools.Ready)throw new InvalidOperationException("Set up media tools once to inspect Instagram posts.");var photos=await engine.InspectPhotosAsync(payload.Url,pending.Token);if(input!=link.Text||pending.IsCancellationRequested)return;
                 L10n.BindFormat(webSummary,TextBlock.TextProperty,"{0} photos · full-frame images · saved in post order",photos.Length);var row=new WrapPanel();row.Children.Add(Button("All",()=>{foreach(var box in photoChoices.Children.OfType<CheckBox>())box.IsChecked=true;}));row.Children.Add(Button("None",()=>{foreach(var box in photoChoices.Children.OfType<CheckBox>())box.IsChecked=false;}));photoChoices.Children.Add(row);
-                foreach(var photo in photos){selectedWebPhotos.Add(photo.Id);var box=new CheckBox{Content=$"Photo {photo.Id}  ·  {photo.Width} × {photo.Height}",IsChecked=true,Margin=new(4,9,4,9)};box.Checked+=(_,_)=>selectedWebPhotos.Add(photo.Id);box.Unchecked+=(_,_)=>selectedWebPhotos.Remove(photo.Id);photoChoices.Children.Add(box);}
+                foreach(var photo in photos){selectedWebPhotos.Add(photo.Id);var box=new CheckBox{IsChecked=true,Margin=new(4,9,4,9)};L10n.BindFormat(box,ContentControl.ContentProperty,"Photo {0} · {1} × {2}",photo.Id,photo.Width,photo.Height);box.Checked+=(_,_)=>selectedWebPhotos.Add(photo.Id);box.Unchecked+=(_,_)=>selectedWebPhotos.Remove(photo.Id);photoChoices.Children.Add(box);}
             }
             else if(payload.Kind=="image"||downloadKind.SelectedItem as string=="thumbnail")L10n.SetText(webSummary,payload.Kind=="image"?"Original image · ready to download":"YouTube thumbnail · best available full-size image");
             else

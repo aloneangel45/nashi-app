@@ -33,10 +33,14 @@ internal static class DesktopInput
     }
     internal static void Key(Window window,Key key,bool control=false,bool shift=false,bool alt=false)
     {
-        window.Activate();Pump();var inputs=new List<Input>();
-        void Add(int vk,bool up=false)=>inputs.Add(new(){Type=1,Data=new(){Keyboard=new(){Key=(ushort)vk,Flags=up?2u:0u}}});
-        if(control)Add(0x11);if(shift)Add(0x10);if(alt)Add(0x12);Add(KeyInterop.VirtualKeyFromKey(key));Add(KeyInterop.VirtualKeyFromKey(key),true);if(alt)Add(0x12,true);if(shift)Add(0x10,true);if(control)Add(0x11,true);
-        if(SendInput((uint)inputs.Count,inputs.ToArray(),Marshal.SizeOf<Input>())!=inputs.Count)throw new InvalidOperationException("Native keyboard input was unavailable on this Windows desktop.");Pump();
+        window.Activate();Pump();var modifiers=new List<int>();if(control)modifiers.Add(0x11);if(shift)modifiers.Add(0x10);if(alt)modifiers.Add(0x12);
+        void Send(int vk,bool up=false){var extended=vk is >=0x21 and <=0x28 or 0x2D or 0x2E;var input=new Input{Type=1,Data=new(){Keyboard=new(){Key=(ushort)vk,Flags=(up?2u:0u)|(extended?1u:0u)}}};if(SendInput(1,[input],Marshal.SizeOf<Input>())!=1)throw new InvalidOperationException("Native keyboard input was unavailable on this Windows desktop.");}
+        try
+        {
+            foreach(var modifier in modifiers)Send(modifier);if(modifiers.Count>0)Pump(30);
+            var virtualKey=KeyInterop.VirtualKeyFromKey(key);Send(virtualKey);Pump(30);Send(virtualKey,true);Pump(30);
+        }
+        finally{foreach(var modifier in modifiers.AsEnumerable().Reverse())Send(modifier,true);if(modifiers.Count>0)Pump();}
     }
     internal static void Drag(FrameworkElement view,Point from,Point to,bool shift=false)
     {

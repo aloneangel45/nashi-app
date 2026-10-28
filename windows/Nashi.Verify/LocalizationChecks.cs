@@ -20,6 +20,10 @@ internal static class LocalizationChecks
             ("Media tools ready","Medya araçları hazır"),("Office tools ready","Ofis araçları hazır"),("Preparing office tools…","Ofis araçları hazırlanıyor…"),
             ("Resolving media…","Medya bilgileri alınıyor…"),("Downloading media…","Medya indiriliyor…"),("Saving files…","Dosyalar kaydediliyor…"),("Downloading image…","Görsel indiriliyor…"),
             ("Measuring loudness…","Ses yüksekliği ölçülüyor…"),("Joining clips…","Klipler birleştiriliyor…"),
+            ("Play Result","Sonucu Oynat"),("Preview Visualization","Görselleştirmeyi Önizle"),("Preview Processed","İşlenmiş Hâli Önizle"),
+            ("Nashi tools","Nashi araçları"),("Nashi Window Management","Nashi pencere yönetimi"),
+            ("This file could not be previewed. Use Open to view it in its default app.","Bu dosya önizlenemedi. Varsayılan uygulamasında açmak için Aç'ı kullan."),
+            ("Nashi · Update 1.2.3 available","Nashi · 1.2.3 güncellemesi var"),
             ("Downloading LibreOffice 26.8.1…","LibreOffice 26.8.1 indiriliyor…"),("Verifying update signature…","Güncelleme imzası doğrulanıyor…")})
             check(AppLocalization.Text(source,"tr")==target,"Windows progress copy stayed untranslated: "+source);
         foreach(var (source,target) in new[]{
@@ -28,7 +32,9 @@ internal static class LocalizationChecks
             ("Compressing PDF · attempt 2 · page 3/8…","PDF sıkıştırılıyor · deneme 2 · sayfa 3/8…"),("Downloading Nashi 0.8.0…","Nashi 0.8.0 indiriliyor…"),
             ("Joining clip 2 of 4","Klip 2/4 birleştiriliyor"),("Compression attempt 2…","Sıkıştırma denemesi 2…"),
             ("Compression 2 · analyzing","Sıkıştırma 2 · analiz ediliyor"),("Compression 2 · encoding","Sıkıştırma 2 · kodlanıyor"),
-            ("Saving clip 2 of 4","Klip 2/4 kaydediliyor")})
+            ("Saving clip 2 of 4","Klip 2/4 kaydediliyor"),("Photo 42 · 1920 × 1080","Fotoğraf 42 · 1920 × 1080"),
+            ("Use notes.png again","notes.png öğesini yeniden kullan"),("Show notes.png in Explorer","notes.png öğesini Dosya Gezgini'nde göster"),
+            ("Preview notes.png","notes.png öğesini önizle")})
             check(AppLocalization.Text(source,"tr")==target,"Dynamic Windows progress copy stayed untranslated: "+source);
         check(AppLocalization.Text("Download, verify and install Nashi 0.8.0? The app will restart. No account or token is needed.","tr")=="Nashi 0.8.0 indirilip doğrulansın ve kurulsun mu? Uygulama yeniden başlayacak. Hesap veya token gerekmez."&&AppLocalization.Text("Office could not convert this document to PDF. ","tr")=="Office bu belgeyi PDF biçimine dönüştüremedi. ","Windows dialog templates lost their inserted values");
         foreach(var value in new[]{"system","light","dark","glass","solid","gradient","grid","row","column","featured","video","audio","thumbnail","photos","image","waveform","spectrum","bars","bleep","mute","blur","pixelate","matchSource","pcm16","pcm24","pcm32","float32","editable","preserve","reflowable","fixed","createNew","addToExisting","beside","ask","folder","Magnifier","Freehand"})check(AppLocalization.Text(value,"tr")!=value,"Untranslated Windows choice: "+value);

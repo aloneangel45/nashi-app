@@ -32,6 +32,27 @@ internal static class UIAudit
         Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
     };
 
+    private static void CheckLocalizationBindings(List<string> issues)
+    {
+        var previous=L10n.Language;
+        try
+        {
+            var progress=new TextBlock();L10n.Language="tr";L10n.SetProgressText(progress,"File 1 of 2 · Downloading media…");
+            if(progress.Text!="Dosya 1/2 · Medya indiriliyor…")issues.Add("Nested progress label did not localize.");
+            var photo=new CheckBox();L10n.BindFormat(photo,ContentControl.ContentProperty,"Photo {0} · {1} × {2}",42,1920,1080);
+            if(photo.Content as string!="Fotoğraf 42 · 1920 × 1080")issues.Add("Dynamic photo choices did not localize.");
+            var accessible=new Button();L10n.BindFormat(accessible,AutomationProperties.NameProperty,"Show {0} in Explorer","notes.png");
+            if(AutomationProperties.GetName(accessible)!="notes.png öğesini Dosya Gezgini'nde göster")issues.Add("Dynamic accessible names did not localize.");
+            var wheelTitle=new TextBlock();L10n.BindLocalizedFormat(wheelTitle,TextBlock.TextProperty,"Nashi · {0}","File actions");
+            if(wheelTitle.Text!="Nashi · Dosya işlemleri")issues.Add("Global drag wheel title did not localize.");
+            L10n.Language="en";
+            if(progress.Text!="File 1 of 2 · Downloading media…"||photo.Content as string!="Photo 42 · 1920 × 1080"||AutomationProperties.GetName(accessible)!="Show notes.png in Explorer"||wheelTitle.Text!="Nashi · File actions")issues.Add("Dynamic localization bindings did not update to English.");
+            if(AppLocalization.Text("Nashi · Update 1.2.3 available","tr")!="Nashi · 1.2.3 güncellemesi var")issues.Add("Tray update tooltip stayed in English.");
+        }
+        catch(Exception error){issues.Add("Dynamic localization binding check failed: "+error.Message);}
+        finally{L10n.Language=previous;}
+    }
+
     /// App dispatches --ui-audit OUTPUT here before SingleInstance, tray, hooks or updater startup.
     /// Filters select matrix dimensions; invalid/empty filters fail instead of producing a false pass.
     internal static int Run(string output, string[]? scenes = null, string[]? appearances = null, string[]? languages = null)
@@ -64,6 +85,7 @@ internal static class UIAudit
             ValidateFilter(requestedScenes, SceneIds, "scene");
             ValidateFilter(requestedAppearances, Appearances, "appearance");
             ValidateFilter(requestedLanguages, Languages, "language");
+            CheckLocalizationBindings(globalIssues);
             Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
             Feedback.Enabled = false;
             // A fresh data directory on every run prevents stale settings or history influencing a capture.

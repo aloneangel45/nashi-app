@@ -1180,5 +1180,17 @@
   "Compression {0} · analyzing": "Sıkıştırma {0} · analiz ediliyor",
   "Compression {0} · encoding": "Sıkıştırma {0} · kodlanıyor",
   "Saving clip {0} of {1}": "Klip {0}/{1} kaydediliyor",
-  "Joining clips…": "Klipler birleştiriliyor…"
+  "Joining clips…": "Klipler birleştiriliyor…",
+  "Play Result": "Sonucu Oynat",
+  "Preview Visualization": "Görselleştirmeyi Önizle",
+  "Preview Processed": "İşlenmiş Hâli Önizle",
+  "Photo {0} · {1} × {2}": "Fotoğraf {0} · {1} × {2}",
+  "Use {0} again": "{0} öğesini yeniden kullan",
+  "Show {0} in Explorer": "{0} öğesini Dosya Gezgini'nde göster",
+  "Preview {0}": "{0} öğesini önizle",
+  "Nashi tools": "Nashi araçları",
+  "Nashi Window Management": "Nashi pencere yönetimi",
+  "This file could not be previewed. Use Open to view it in its default app.": "Bu dosya önizlenemedi. Varsayılan uygulamasında açmak için Aç'ı kullan.",
+  "Nashi · {0}": "Nashi · {0}",
+  "Nashi · Update {0} available": "Nashi · {0} güncellemesi var"
 }
