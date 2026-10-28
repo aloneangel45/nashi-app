@@ -6,12 +6,12 @@ public sealed partial class SettingsWindow
 {
     private void FormatDefaults()
     {
-        Heading("Your go-to exports.","Defaults apply whenever you choose an output format.");var formats=FeatureCatalog.Conversions.Values.SelectMany(v=>v).Distinct().Order().ToArray();var select=new ComboBox{ItemsSource=formats,SelectedIndex=0};page.Children.Add(select);var panel=new StackPanel();page.Children.Add(panel);
+        Heading("Your go-to exports.","Defaults apply whenever you choose an output format.");var formats=FeatureCatalog.Conversions.Values.SelectMany(v=>v).Distinct().Order().ToArray();var select=new ComboBox{ItemsSource=formats,SelectedIndex=0};L10n.Choices(select);page.Children.Add(select);var panel=new StackPanel();page.Children.Add(panel);
         void Render()
         {
             panel.Children.Clear();var name=(string)select.SelectedItem;var profile=store.Profile(name);var fields=new Dictionary<string,TextBox>();var choices=new Dictionary<string,ComboBox>();
             void Number(string key,string title,double value){panel.Children.Add(L10n.Label(new TextBlock{Text=title,Margin=new(4,12,4,0)}));var input=new TextBox{Text=value.ToString("0.###",System.Globalization.CultureInfo.CurrentCulture)};fields[key]=input;panel.Children.Add(input);}
-            void Choice(string key,string title,string[] values,string value){panel.Children.Add(L10n.Label(new TextBlock{Text=title,Margin=new(4,12,4,0)}));var input=new ComboBox{ItemsSource=values,SelectedItem=value};choices[key]=input;panel.Children.Add(input);}
+            void Choice(string key,string title,string[] values,string value){panel.Children.Add(L10n.Label(new TextBlock{Text=title,Margin=new(4,12,4,0)}));var input=new ComboBox{ItemsSource=values,SelectedItem=value};L10n.Choices(input);choices[key]=input;panel.Children.Add(input);}
             var audio=MediaEngine.AudioFormats.Contains(name);var video=MediaEngine.VideoFormats.Contains(name)&&name!="gif";var image=new[]{"png","jpg","heic","webp","avif","tiff","bmp"}.Contains(name);
             if(video||new[]{"jpg","heic","webp","avif"}.Contains(name))Number("quality","Quality (%)",profile.Quality*100);
             if(video||audio&&name is not ("wav" or "aiff" or "flac"))Number("bitrate","Audio bitrate (kbps)",profile.AudioBitrate);

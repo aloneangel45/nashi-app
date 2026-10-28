@@ -73,7 +73,7 @@ public sealed partial class ToolEditor
         var zoom=1d;var result=new StackPanel();var controls=new StackPanel{Orientation=Orientation.Horizontal};var viewbox=new Viewbox{Child=visual,Stretch=Stretch.Uniform,Width=600,Height=420};var scroll=new ScrollViewer{Content=viewbox,Height=420,HorizontalScrollBarVisibility=ScrollBarVisibility.Auto,VerticalScrollBarVisibility=ScrollBarVisibility.Auto};
         void SetZoom(double value){zoom=Math.Clamp(value,.25,4);var height=Math.Clamp(ActualHeight-360,180,420);scroll.Height=height;viewbox.Width=Math.Max(100,scroll.ViewportWidth)*zoom;viewbox.Height=(scroll.ViewportHeight>0?scroll.ViewportHeight:height)*zoom;}
         var percent=L10n.Label(new TextBlock{Text="100%",VerticalAlignment=VerticalAlignment.Center,Foreground=Theme.Brush("Muted"),Margin=new(8,0,8,0)});
-        void Apply(double value){SetZoom(value);percent.Text=$"{zoom*100:0}%";}
+        void Apply(double value){SetZoom(value);L10n.SetUserText(percent,$"{zoom*100:0}%");}
         resetPreviewZoom=()=>Apply(1);
         controls.Children.Add(MainWindow.Button("−",()=>Apply(zoom/1.25)));controls.Children.Add(MainWindow.Button("Fit",()=>Apply(1)));controls.Children.Add(MainWindow.Button("+",()=>Apply(zoom*1.25)));controls.Children.Add(percent);result.Children.Add(controls);result.Children.Add(scroll);System.Windows.Automation.AutomationProperties.SetAutomationId(scroll,"ImagePreviewViewport");scroll.SizeChanged+=(_,_)=>SetZoom(zoom);scroll.ScrollChanged+=(_,e)=>{if(Math.Abs(e.ViewportWidthChange)>.1||Math.Abs(e.ViewportHeightChange)>.1)SetZoom(zoom);};SizeChanged+=(_,_)=>SetZoom(zoom);return result;
     }

@@ -306,6 +306,14 @@ internal static class UIAudit
             _ => false
         };
         if (!capture.Checks["actualScene"]) capture.Issues.Add("The requested scene's semantic state was not present.");
+        if(capture.Scene is "home.empty" or "home.selected")
+        {
+            var expectedPill= capture.Scene=="home.empty"?L10n.Text("✦  START HERE"):L10n.Text("✦  READY WHEN YOU ARE");
+            var expectedSelection=capture.Scene=="home.empty"?L10n.Text("Drop something good."):Path.GetFileName(fixtures.Image);
+            var expectedButton=capture.Scene=="home.empty"?L10n.Text("Choose files"):L10n.Text("Add or change files");
+            capture.Checks["dynamicHomeCopy"] = Descendants<TextBlock>(owner).Any(text=>text.Text==expectedPill) && Descendants<TextBlock>(owner).Any(text=>text.Text==expectedSelection) && Descendants<Button>(owner).Any(button=>button.Content as string==expectedButton);
+            if(!capture.Checks["dynamicHomeCopy"])capture.Issues.Add("Home selection text or button label did not update with the selected files and language.");
+        }
     }
 
     private static void ValidateLayout(Window window, Capture capture)

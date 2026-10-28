@@ -43,6 +43,11 @@ internal static class LocalizationChecks
             check(Children(editor).OfType<TextBlock>().Any(t=>t.Text=="Görseli Kırp"),"Open crop editor did not switch language");
             check(editor.FieldForTest("Width").Text=="123","Language switch reset an unsaved editor value");
             check(language.SelectedItem as string=="Türkçe","Language picker did not retain the Turkish autonym");
+            var choices=new ComboBox{ItemsSource=new[]{"light","dark","solid"},SelectedItem="dark"};L10n.Choices(choices);
+            check(choices.ItemTemplate is not null&&choices.SelectedItem as string=="dark","Localized dropdown labels changed their saved option values");
+            var formatted=new TextBlock();L10n.BindFormat(formatted,TextBlock.TextProperty,"{0} selected",3);
+            check(formatted.Text=="3 seçili","Live formatted localization did not apply Turkish count copy");L10n.Language="en";
+            check(formatted.Text=="3 selected","Formatted localization did not update when language changed");L10n.Language="tr";
             var raw=new TextBox{Text="Home\r\nLibrary · Türkçe ıİşğü 🍐"};L10n.Attach(raw);
             check(raw.Text=="Home\r\nLibrary · Türkçe ıİşğü 🍐","Localization modified user text");
             Capture(settings,Path.Combine(directory,"windows-settings-turkish.png"));

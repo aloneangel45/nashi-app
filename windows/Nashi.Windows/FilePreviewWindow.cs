@@ -43,7 +43,7 @@ internal sealed class FilePreviewWindow:Window
     private async Task Load()
     {
         lifetime.Cancel();lifetime.Dispose();lifetime=new();var token=lifetime.Token;CloseMedia();pdfDocument?.Dispose();pdfDocument=null;content.Content=L10n.Label(new TextBlock{Text="Preparing preview…",Margin=new(20)});
-        var path=CurrentPath;caption.Text=$"{Path.GetFileName(path)}  ·  {index+1} / {paths.Length}";Title=Path.GetFileName(path)+" · Preview · Nashi";
+        var path=CurrentPath;caption.Text=$"{Path.GetFileName(path)}  ·  {index+1} / {paths.Length}";L10n.BindFormat(this,Window.TitleProperty,"{0} · Preview · Nashi",Path.GetFileName(path));
         try
         {
             if(Directory.Exists(path)){content.Content=L10n.Label(new TextBlock{Text="Folder · "+Path.GetFileName(path)+"\nUse Open to view its contents.",TextWrapping=TextWrapping.Wrap});return;}
@@ -60,7 +60,7 @@ internal sealed class FilePreviewWindow:Window
                 var pdf=await Task.Run(()=>PdfRasterDocument.Open(path),token);if(token.IsCancellationRequested){pdf.Dispose();return;}pdfDocument=pdf;
                 var pageIndex=0;var panel=new DockPanel();var controls=new StackPanel{Orientation=Orientation.Horizontal};DockPanel.SetDock(controls,Dock.Bottom);panel.Children.Add(controls);var image=new Image{Stretch=Stretch.Uniform};panel.Children.Add(image);
                 async Task Page(int delta){try{token.ThrowIfCancellationRequested();pageIndex=Math.Clamp(pageIndex+delta,0,pdf.PageCount-1);var requested=pageIndex;var png=await Task.Run(()=>pdf.RenderPage(requested,144,token),token);if(!token.IsCancellationRequested&&requested==pageIndex)image.Source=ImageEngine.FromPng(png);}catch(Exception error){if(!token.IsCancellationRequested&&ReferenceEquals(pdfDocument,pdf))content.Content=L10n.Label(new TextBlock{Text="Preview unavailable. "+error.Message,TextWrapping=TextWrapping.Wrap});}}
-                controls.Children.Add(MainWindow.Button("Previous page",async()=>{try{await Page(-1);}catch(OperationCanceledException){}}));controls.Children.Add(MainWindow.Button("Next page",async()=>{try{await Page(1);}catch(OperationCanceledException){}}));controls.Children.Add(new TextBlock{Text=$"{pdf.PageCount} pages",VerticalAlignment=VerticalAlignment.Center});content.Content=panel;await Page(0);
+                controls.Children.Add(MainWindow.Button("Previous page",async()=>{try{await Page(-1);}catch(OperationCanceledException){}}));controls.Children.Add(MainWindow.Button("Next page",async()=>{try{await Page(1);}catch(OperationCanceledException){}}));controls.Children.Add(L10n.Label(new TextBlock{Text=$"{pdf.PageCount} pages",VerticalAlignment=VerticalAlignment.Center}));content.Content=panel;await Page(0);
             }
             else if(FeatureCatalog.IsVideo(path)||FeatureCatalog.IsAudio(path))
             {

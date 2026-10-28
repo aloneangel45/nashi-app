@@ -21,14 +21,17 @@ internal static class L10n
     internal static string Text(string source)=>AppLocalization.Text(source,Language);
     internal static string Uppercase(string source)=>AppLocalization.Uppercase(Text(source),Language);
     internal static void Bind(DependencyObject target,DependencyProperty property,string source)=>BindingOperations.SetBinding(target,property,new Binding(nameof(LanguageState.Language)){Source=LanguageState.Shared,Converter=TextConverter.Shared,ConverterParameter=source,Mode=BindingMode.OneWay});
+    internal static void BindFormat(DependencyObject target,DependencyProperty property,string source,params object[] arguments)=>BindingOperations.SetBinding(target,property,new Binding(nameof(LanguageState.Language)){Source=LanguageState.Shared,Converter=TextConverter.Shared,ConverterParameter=new object[]{source,arguments},Mode=BindingMode.OneWay});
     internal static TextBlock Label(TextBlock text){Bind(text,TextBlock.TextProperty,text.Text);return text;}
     internal static T Content<T>(T control)where T:ContentControl{if(control.Content is string source)Bind(control,ContentControl.ContentProperty,source);return control;}
     internal static void SetText(TextBlock text,string source)=>Bind(text,TextBlock.TextProperty,source);
+    internal static void SetUserText(TextBlock text,string value){BindingOperations.ClearBinding(text,TextBlock.TextProperty);text.Text=value;}
     internal static void Attach(DependencyObject root)
     {
         if(root is ButtonBase button&&button.Content is string content&&!BindingOperations.IsDataBound(button,ContentControl.ContentProperty))Bind(button,ContentControl.ContentProperty,content);
         if(root is HeaderedContentControl header&&header.Header is string heading&&!BindingOperations.IsDataBound(header,HeaderedContentControl.HeaderProperty))Bind(header,HeaderedContentControl.HeaderProperty,heading);
         if(root is FrameworkElement element&&element.ToolTip is string tip&&!BindingOperations.IsDataBound(element,FrameworkElement.ToolTipProperty))Bind(element,FrameworkElement.ToolTipProperty,tip);
+        if(root is ComboBox combo&&combo.ItemsSource is IEnumerable<string>&&combo.ItemTemplate is null)Choices(combo);
         for(var i=0;i<VisualTreeHelper.GetChildrenCount(root);i++)Attach(VisualTreeHelper.GetChild(root,i));
     }
     internal static void Choices(ItemsControl control)
@@ -40,7 +43,11 @@ internal static class L10n
     private sealed class TextConverter:IValueConverter
     {
         internal static readonly TextConverter Shared=new();
-        public object Convert(object value,Type type,object parameter,CultureInfo culture)=>AppLocalization.Text((string)parameter,(string)value);
+        public object Convert(object value,Type type,object parameter,CultureInfo culture)
+        {
+            if(parameter is object[] {Length:2} format&&format[0] is string source&&format[1] is object[] args)return string.Format(CultureInfo.CurrentCulture,AppLocalization.Text(source,(string)value),args);
+            return AppLocalization.Text((string)parameter,(string)value);
+        }
         public object ConvertBack(object value,Type type,object parameter,CultureInfo culture)=>throw new NotSupportedException();
     }
     private sealed class ChoiceConverter:IMultiValueConverter

@@ -35,7 +35,7 @@ public sealed partial class ToolEditor
     private void PlayRange()
     {
         try{var (a,b)=ReadPlaybackRange();Seek(a);rangePlaybackEnd=b;playingRange=true;player.Play();playing=true;}
-        catch(ArgumentException error){player.Pause();playing=false;playingRange=false;time.Text=error.Message;}
+        catch(ArgumentException error){player.Pause();playing=false;playingRange=false;L10n.SetText(time,error.Message);}
     }
     private MediaOptions MoreMediaSettings(MediaOptions original)
     {

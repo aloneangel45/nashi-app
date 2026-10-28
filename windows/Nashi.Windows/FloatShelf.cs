@@ -65,8 +65,7 @@ public sealed class FloatShelf:Window
     private void LanguageChanged(object? sender,PropertyChangedEventArgs e){Reload();files.ContextMenu=Menu();stack.ContextMenu=Menu();}
     private Button Control(string text,string help,Action click)
     {
-        var b=new Button{Content=text,ToolTip=L10n.Text(help),Width=24,Height=24,Padding=new(0),FontSize=16,VerticalAlignment=VerticalAlignment.Top,HorizontalContentAlignment=HorizontalAlignment.Center,VerticalContentAlignment=VerticalAlignment.Center,Background=Brushes.Transparent,BorderThickness=new(0)};
-        System.Windows.Automation.AutomationProperties.SetName(b,L10n.Text(help));b.Click+=(_,_)=>click();return b;
+        var b=new Button{Content=text,ToolTip=help,Width=24,Height=24,Padding=new(0),FontSize=16,VerticalAlignment=VerticalAlignment.Top,HorizontalContentAlignment=HorizontalAlignment.Center,VerticalContentAlignment=VerticalAlignment.Center,Background=Brushes.Transparent,BorderThickness=new(0)};L10n.Bind(b,FrameworkElement.ToolTipProperty,help);L10n.Bind(b,System.Windows.Automation.AutomationProperties.NameProperty,help);b.Click+=(_,_)=>click();return b;
     }
     private void ScheduleHover(bool inside){hover.Stop();hoverInside=inside;hover.Interval=TimeSpan.FromMilliseconds(inside?200:650);hover.Start();}
     private void MoveShelf(){interacting=true;hover.Stop();try{DragMove();edge=DesktopGeometry.Snap(this,null,true);}finally{interacting=false;ScheduleHover(false);}}
@@ -102,7 +101,7 @@ public sealed class FloatShelf:Window
         const string wire="M76,71 L57,28 C47,6 70,-1 78,19 L94,57 C102,74 87,78 81,63 L66,28";
         foreach(var (color,width) in new[]{("#55000000",4.5),("#C2CAC5",2.6),("#CCFFFFFF",.7)})stack.Children.Add(new System.Windows.Shapes.Path{Data=Geometry.Parse(wire),Stroke=new SolidColorBrush((Color)ColorConverter.ConvertFromString(color)),StrokeThickness=width,StrokeStartLineCap=PenLineCap.Round,StrokeEndLineCap=PenLineCap.Round,IsHitTestVisible=false});
     }
-    private void UpdateLabels(){count.Content=(IsExpanded?"⌃  ":"⌄  ")+L10n.Text(paths.Count==1?"1 item":$"{paths.Count} items");count.ToolTip=L10n.Text(IsExpanded?"Collapse Float":"Expand Float");status.Text=L10n.Text(files.SelectedItems.Count>0?$"{files.SelectedItems.Count} selected":"Space · Preview");Title=$"Float · {paths.Count} · Nashi";}
+    private void UpdateLabels(){if(paths.Count==1)L10n.Bind(count,ContentControl.ContentProperty,(IsExpanded?"⌃  ":"⌄  ")+"1 item");else L10n.BindFormat(count,ContentControl.ContentProperty,(IsExpanded?"⌃  ":"⌄  ")+"{0} items",paths.Count);L10n.Bind(count,FrameworkElement.ToolTipProperty,IsExpanded?"Collapse Float":"Expand Float");if(files.SelectedItems.Count>0)L10n.BindFormat(status,TextBlock.TextProperty,"{0} selected",files.SelectedItems.Count);else L10n.SetText(status,"Space · Preview");L10n.BindFormat(this,Window.TitleProperty,"Float · {0} files",paths.Count);}
     private void Present()
     {
         glass.Visibility=IsExpanded?Visibility.Visible:Visibility.Collapsed;glass.Background=new LinearGradientBrush(Theme.Dark?Color.FromArgb(248,42,49,34):Color.FromArgb(248,250,231,185),Theme.Dark?Color.FromArgb(248,26,39,30):Color.FromArgb(248,227,235,211),90);glass.SetResourceReference(Border.BorderBrushProperty,"Line");
