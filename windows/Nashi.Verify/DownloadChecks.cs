@@ -4,7 +4,7 @@ internal static class DownloadChecks
 {
     private sealed class Handler(Func<HttpRequestMessage,int,HttpResponseMessage> respond):HttpMessageHandler
     {
-        public int Calls;protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,CancellationToken token){token.ThrowIfCancellationRequested();return Task.FromResult(respond(request,++Calls));}
+        public int Calls;protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,CancellationToken token){token.ThrowIfCancellationRequested();if(request.Version!=HttpVersion.Version11||request.VersionPolicy!=HttpVersionPolicy.RequestVersionExact)throw new Exception("Tool downloads did not require HTTP/1.1.");return Task.FromResult(respond(request,++Calls));}
     }
     private sealed class Stalled:Stream
     {

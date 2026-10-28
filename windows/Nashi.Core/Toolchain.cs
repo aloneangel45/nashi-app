@@ -1,4 +1,5 @@
 using System.IO.Compression;
+using System.Net;
 using System.Security.Cryptography;
 
 namespace Nashi.Core;
@@ -63,7 +64,7 @@ public static class VerifiedDownload
     private static async Task FetchCore(Uri uri,string output,long maximum,Action<double>? progress,CancellationToken token,HttpMessageHandler? handler,TimeSpan idle)
     {
         if(uri.Scheme!="https"||!string.IsNullOrEmpty(uri.UserInfo))throw new InvalidDataException("An HTTPS download is required.");
-        using var client=handler is null?new HttpClient(new SocketsHttpHandler{ConnectTimeout=TimeSpan.FromSeconds(30)}):new HttpClient(handler,false);client.Timeout=Timeout.InfiniteTimeSpan;client.DefaultRequestHeaders.UserAgent.ParseAdd("Nashi/0.7");
+        using var client=handler is null?new HttpClient(new SocketsHttpHandler{ConnectTimeout=TimeSpan.FromSeconds(30)}):new HttpClient(handler,false);client.Timeout=Timeout.InfiniteTimeSpan;client.DefaultRequestVersion=HttpVersion.Version11;client.DefaultVersionPolicy=HttpVersionPolicy.RequestVersionExact;client.DefaultRequestHeaders.UserAgent.ParseAdd("Nashi/0.7");
         for(var attempt=0;attempt<3;attempt++)
         {
             try{await FetchOnce(client,uri,output,maximum,progress,token,idle);return;}
