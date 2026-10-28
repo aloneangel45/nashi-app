@@ -13,6 +13,23 @@ internal static class LocalizationChecks
         check(AppLocalization.Text("Original size: "+raw,"tr")=="Orijinal boyut: "+raw,"Interpolation changed a file/user value");
         check(AppLocalization.Text("Nicely done. 12 files are ready.","tr")=="Hazır! 12 dosyan hazır.","Count interpolation failed");
         check(AppLocalization.Text("Couldn’t finish","tr")=="İşlem tamamlanamadı"&&AppLocalization.Text("Choose at least two PDFs.","tr")=="En az iki PDF seç.","Windows dialog titles or error messages stayed in English");
+        foreach(var (source,target) in new[]{
+            ("Packing files…","Dosyalar paketleniyor…"),("Extracting files…","Dosyalar çıkarılıyor…"),("Saving archive…","Arşiv kaydediliyor…"),("Saving your files…","Dosyaların kaydediliyor…"),
+            ("Saving document…","Belge kaydediliyor…"),("Downloading ExifTool…","ExifTool indiriliyor…"),("Metadata tools ready","Üst veri araçları hazır"),("Saving metadata…","Üst veriler kaydediliyor…"),
+            ("Preparing move…","Taşıma hazırlanıyor…"),("Saving collage…","Kolaj kaydediliyor…"),("Adding pages…","Sayfalar ekleniyor…"),("Saving images…","Görseller kaydediliyor…"),
+            ("Media tools ready","Medya araçları hazır"),("Office tools ready","Ofis araçları hazır"),("Preparing office tools…","Ofis araçları hazırlanıyor…"),
+            ("Resolving media…","Medya bilgileri alınıyor…"),("Downloading media…","Medya indiriliyor…"),("Saving files…","Dosyalar kaydediliyor…"),("Downloading image…","Görsel indiriliyor…"),
+            ("Measuring loudness…","Ses yüksekliği ölçülüyor…"),("Joining clips…","Klipler birleştiriliyor…"),
+            ("Downloading LibreOffice 26.8.1…","LibreOffice 26.8.1 indiriliyor…"),("Verifying update signature…","Güncelleme imzası doğrulanıyor…")})
+            check(AppLocalization.Text(source,"tr")==target,"Windows progress copy stayed untranslated: "+source);
+        foreach(var (source,target) in new[]{
+            ("Downloading FFmpeg 9.0…","FFmpeg 9.0 indiriliyor…"),("Downloading yt-dlp…","yt-dlp indiriliyor…"),("Preparing photo.png…","photo.png hazırlanıyor…"),
+            ("Rendering page 3","3. sayfa oluşturuluyor"),("Fitting image · attempt 2…","Görsel sığdırılıyor · deneme 2…"),("Photo 2 of 5…","Fotoğraf 2/5…"),
+            ("Compressing PDF · attempt 2 · page 3/8…","PDF sıkıştırılıyor · deneme 2 · sayfa 3/8…"),("Downloading Nashi 0.8.0…","Nashi 0.8.0 indiriliyor…"),
+            ("Joining clip 2 of 4","Klip 2/4 birleştiriliyor"),("Compression attempt 2…","Sıkıştırma denemesi 2…"),
+            ("Compression 2 · analyzing","Sıkıştırma 2 · analiz ediliyor"),("Compression 2 · encoding","Sıkıştırma 2 · kodlanıyor"),
+            ("Saving clip 2 of 4","Klip 2/4 kaydediliyor")})
+            check(AppLocalization.Text(source,"tr")==target,"Dynamic Windows progress copy stayed untranslated: "+source);
         check(AppLocalization.Text("Download, verify and install Nashi 0.8.0? The app will restart. No account or token is needed.","tr")=="Nashi 0.8.0 indirilip doğrulansın ve kurulsun mu? Uygulama yeniden başlayacak. Hesap veya token gerekmez."&&AppLocalization.Text("Office could not convert this document to PDF. ","tr")=="Office bu belgeyi PDF biçimine dönüştüremedi. ","Windows dialog templates lost their inserted values");
         foreach(var value in new[]{"system","light","dark","glass","solid","gradient","grid","row","column","featured","video","audio","thumbnail","photos","image","waveform","spectrum","bars","bleep","mute","blur","pixelate","matchSource","pcm16","pcm24","pcm32","float32","editable","preserve","reflowable","fixed","createNew","addToExisting","beside","ask","folder","Magnifier","Freehand"})check(AppLocalization.Text(value,"tr")!=value,"Untranslated Windows choice: "+value);
         check(AppLocalization.Text("2 pages","tr")=="2 sayfa","PDF preview page count was not localized");
@@ -33,6 +50,8 @@ internal static class LocalizationChecks
             ("Float · Nashi","Yüzen Pencere · Nashi"),("No QR codes found. Try a larger or sharper image.","QR kodu bulunamadı. Daha büyük veya daha net bir görsel dene."),
             ("1 QR code found.","1 QR kodu bulundu."),("2 QR codes found.","2 QR kodu bulundu."),
             ("Original image · ready to download","Orijinal görsel · indirilmeye hazır"),("YouTube thumbnail · best available full-size image","YouTube küçük resmi · mevcut en yüksek çözünürlük"),
+            ("Couldn’t paste: clipboard error","Yapıştırılamadı: clipboard error"),("Edit fields or remove metadata. Encoded audio and video stay untouched.","Alanları düzenle veya üst verileri kaldır. Ses ve video akışları yeniden kodlanmaz."),
+            ("Edit fields or remove metadata. Encoded image pixels stay untouched.","Alanları düzenle veya üst verileri kaldır. Görsel pikselleri değiştirilmez."),
             ("Balanced","Dengeli"),("Strong","Güçlü"),("Original dimensions","Orijinal boyutlar"),("Custom dimensions","Özel boyutlar"),("2560 px longest edge","Uzun kenar 2560 px"),("1920 px longest edge","Uzun kenar 1920 px"),("1280 px longest edge","Uzun kenar 1280 px"),("Best available","Mevcut en iyi kalite"),("Up to 1080p","En fazla 1080p"),("Up to 720p","En fazla 720p")})
             check(AppLocalization.Text(source,"tr")==target,"Windows title or dropdown value stayed untranslated: "+source);
         foreach(var value in new[]{"Home.png","MP4","Ctrl+Shift","⌘S","00:01.250"})check(AppLocalization.Text(value,"tr")==value,"Translation changed a format, path or shortcut");

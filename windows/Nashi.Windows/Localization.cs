@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Globalization;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -26,6 +27,16 @@ internal static class L10n
     internal static TextBlock Label(TextBlock text){Bind(text,TextBlock.TextProperty,text.Text);return text;}
     internal static T Content<T>(T control)where T:ContentControl{if(control.Content is string source)Bind(control,ContentControl.ContentProperty,source);return control;}
     internal static void SetText(TextBlock text,string source)=>Bind(text,TextBlock.TextProperty,source);
+    internal static void SetProgressText(TextBlock text,string source)
+    {
+        var match=Regex.Match(source,@"^File (\d+) of (\d+) · (.+)$",RegexOptions.CultureInvariant,TimeSpan.FromMilliseconds(50));
+        if(match.Success)
+        {
+            BindFormat(text,TextBlock.TextProperty,"File {0} of {1} · {2}",match.Groups[1].Value,match.Groups[2].Value,new LocalizedArgument(match.Groups[3].Value));
+            return;
+        }
+        SetText(text,source);
+    }
     internal static void SetUserText(TextBlock text,string value){BindingOperations.ClearBinding(text,TextBlock.TextProperty);text.Text=value;}
     internal static void Attach(DependencyObject root)
     {

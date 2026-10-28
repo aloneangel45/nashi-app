@@ -49,6 +49,9 @@ internal static class LocalizationChecks
             var formatted=new TextBlock();L10n.BindFormat(formatted,TextBlock.TextProperty,"{0} selected",3);
             check(formatted.Text=="3 seçili","Live formatted localization did not apply Turkish count copy");L10n.Language="en";
             check(formatted.Text=="3 selected","Formatted localization did not update when language changed");L10n.Language="tr";
+            var progressLabel=new TextBlock();L10n.SetProgressText(progressLabel,"File 1 of 2 · Downloading media…");
+            check(progressLabel.Text=="Dosya 1/2 · Medya indiriliyor…","Nested file progress label did not localize");L10n.Language="en";
+            check(progressLabel.Text=="File 1 of 2 · Downloading media…","Nested file progress label did not update to English");L10n.Language="tr";
             var title=new TextBlock();L10n.BindLocalizedFormat(title,TextBlock.TextProperty,"{0} · Nashi","Crop Image");
             check(title.Text=="Görseli Kırp · Nashi","Localized dynamic tool title did not translate its tool name");L10n.Language="en";
             check(title.Text=="Crop Image · Nashi","Localized dynamic tool title did not update to English");L10n.Language="tr";
